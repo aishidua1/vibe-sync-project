@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe-Sync Flow Chart with Pseudocode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .flowchart-section {
+            position: sticky;
+            top: 20px;
+        }
+        
+        .flowchart-section h2 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        
+        .pseudocode-section h2 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        
+        /* Terminal (Start/End) */
+        .terminal {
+            background: white;
+            border: 2px solid #2d3748;
+            border-radius: 50px;
+            padding: 15px 40px;
+            text-align: center;
+            font-weight: 600;
+            color: #2d3748;
+            min-width: 120px;
+        }
+        
+        /* Process Box */
+        .process {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px 25px;
+            text-align: center;
+            min-width: 220px;
+            max-width: 300px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .process:hover {
+            background: #f7fafc;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .process-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+        
+        .process-detail {
+            color: #4a5568;
+            font-size: 0.8em;
+            line-height: 1.4;
+        }
+        
+        /* Decision Diamond */
+        .decision {
+            background: white;
+            border: 2px solid #f59e0b;
+            width: 140px;
+            height: 140px;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .decision-text {
+            transform: rotate(-45deg);
+            font-weight: 700;
+            color: #f59e0b;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        
+        /* Arrows */
+        .arrow-down {
+            width: 2px;
+            height: 30px;
+            background: #2d3748;
+            position: relative;
+        }
+        
+        .arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid #2d3748;
+        }
+        
+        /* Decision branches */
+        .decision-branch {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .branch-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .branch-label {
+            font-size: 0.8em;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .yes-label {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .no-label {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .green-arrow {
+            background: #48bb78;
+        }
+        
+        .green-arrow::after {
+            border-top: 8px solid #48bb78;
+        }
+        
+        .red-arrow {
+            background: #f56565;
+        }
+        
+        .red-arrow::after {
+            border-top: 8px solid #f56565;
+        }
+        
+        /* Pseudocode blocks */
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+            line-height: 1.7;
+        }
+        
+        .code-block h3 {
+            color: #63b3ed;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .code-block pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .keyword {
+            color: #fc8181;
+            font-weight: bold;
+        }
+        
+        .function {
+            color: #68d391;
+        }
+        
+        .comment {
+            color: #90cdf4;
+            font-style: italic;
+        }
+        
+        .string {
+            color: #fbd38d;
+        }
+        
+        .variable {
+            color: #b794f4;
+        }
+        
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flowchart-section {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Vibe-Sync Flow Chart with Pseudocode</h1>
+        
+        <div class="content-grid">
+            <!-- FLOWCHART COLUMN -->
+            <div class="flowchart-section">
+                <h2>Flow Chart</h2>
+                <div class="flowchart">
+                    <div class="terminal">Start</div>
+                    <div class="arrow-down"></div>
+                    
+                    <div class="process">
+                        <div class="process-title">Initialize System</div>
+                        <div class="process-detail">
+                            Set up API connections
+                        </div>
+                    </div>
+                    <div class="arrow-down"></div>
+                    
+                    <div class="process">
+                        <div class="process-title">Fetch Current Data</div>
+                        <div class="process-detail">
+                            Poll Spotify & Calendar
+                        </div>
+                    </div>
+                    <div class="arrow-down"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Music<br>Playing?</div>
+                    </div>
+                    
+                    <div class="decision-branch">
+                        <div class="branch-path">
+                            <div class="branch-label yes-label">Yes</div>
+                            <div class="arrow-down green-arrow" style="height: 20px;"></div>
+                            
+                            <div class="process">
+                                <div class="process-title">Extract Metadata</div>
+                                <div class="process-detail">
+                                    Get audio features
+                                </div>
+                            </div>
+                            <div class="arrow-down" style="height: 20px;"></div>
+                            
+                            <div class="process">
+                                <div class="process-title">Build Context</div>
+                                <div class="process-detail">
+                                    Combine data
+                                </div>
+                            </div>
+                            <div class="arrow-down" style="height: 20px;"></div>
+                            
+                            <div class="process">
+                                <div class="process-title">AI Analysis</div>
+                                <div class="process-detail">
+                                    Duke AI Gateway
+                                </div>
+                            </div>
+                            <div class="arrow-down" style="height: 20px;"></div>
+                            
+                            <div class="decision">
+                                <div class="decision-text">Score<br>< 60?</div>
+                            </div>
+                            
+                            <div class="decision-branch">
+                                <div class="branch-path">
+                                    <div class="branch-label yes-label">Yes</div>
+                                    <div class="arrow-down green-arrow" style="height: 20px;"></div>
+                                    <div class="process">
+                                        <div class="process-title">Alert</div>
+                                    </div>
+                                </div>
+                                <div class="branch-path">
+                                    <div class="branch-label no-label">No</div>
+                                    <div class="arrow-down red-arrow" style="height: 20px;"></div>
+                                    <div class="process">
+                                        <div class="process-title">Synced</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="arrow-down" style="height: 30px;"></div>
+                            <div class="process">
+                                <div class="process-title">Update Dashboard</div>
+                            </div>
+                        </div>
+                        
+                        <div class="branch-path">
+                            <div class="branch-label no-label">No</div>
+                            <div class="arrow-down red-arrow" style="height: 20px;"></div>
+                            <div class="process">
+                                <div class="process-title">Display Idle</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down" style="height: 40px;"></div>
+                    
+                    <div class="process">
+                        <div class="process-title">Wait 30 Seconds</div>
+                    </div>
+                    <div class="arrow-down"></div>
+                    
+                    <div class="decision">
+                        <div class="decision-text">Continue?</div>
+                    </div>
+                    
+                    <div class="decision-branch">
+                        <div class="branch-path">
+                            <div class="branch-label yes-label">Yes</div>
+                            <div class="arrow-down green-arrow" style="height: 20px;"></div>
+                            <div style="color: #48bb78; font-weight: 600; font-size: 0.85em;">
+                                ↻ Loop back
+                            </div>
+                        </div>
+                        <div class="branch-path">
+                            <div class="branch-label no-label">No</div>
+                            <div class="arrow-down red-arrow" style="height: 20px;"></div>
+                            <div class="terminal">End</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PSEUDOCODE COLUMN -->
+            <div class="pseudocode-section">
+                <h2>Pseudocode Implementation</h2>
+                
+                <!-- Main Loop -->
+                <div class="code-block">
+                    <h3>Main Orchestration Loop</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">vibeSyncMainLoop</span>():
+    
+    <span class="comment">// Initialize connections</span>
+    <span class="keyword">INITIALIZE</span> <span class="variable">spotifyClient</span>, <span class="variable">calendarClient</span>, <span class="variable">aiGateway</span>
+    <span class="keyword">SET</span> <span class="variable">pollingInterval</span> = 30 seconds
+    <span class="keyword">SET</span> <span class="variable">lastAlertState</span> = <span class="keyword">NULL</span>
+    
+    <span class="comment">// Main monitoring loop</span>
+    <span class="keyword">WHILE</span> system is running:
+        
+        <span class="comment">// Fetch current data</span>
+        <span class="variable">currentTrack</span> = <span class="function">fetchSpotifyNowPlaying</span>(<span class="variable">spotifyClient</span>)
+        <span class="variable">upcomingEvents</span> = <span class="function">fetchCalendarEvents</span>(<span class="variable">calendarClient</span>)
+        
+        <span class="comment">// Check if music is playing</span>
+        <span class="keyword">IF</span> <span class="variable">currentTrack</span> is <span class="keyword">NULL</span>:
+            <span class="function">displayIdleState</span>()
+            <span class="keyword">WAIT</span> <span class="variable">pollingInterval</span>
+            <span class="keyword">CONTINUE</span>
+        
+        <span class="comment">// Build context and analyze</span>
+        <span class="variable">musicContext</span> = <span class="function">extractMusicMetadata</span>(<span class="variable">currentTrack</span>)
+        <span class="variable">calendarContext</span> = <span class="function">buildCalendarContext</span>(<span class="variable">upcomingEvents</span>)
+        
+        <span class="variable">aiResponse</span> = <span class="function">analyzeVibeCompatibility</span>(<span class="variable">musicContext</span>, <span class="variable">calendarContext</span>)
+        
+        <span class="comment">// Check for mismatch</span>
+        <span class="keyword">IF</span> <span class="variable">aiResponse</span>.score < 60:
+            <span class="variable">alert</span> = <span class="function">createAlert</span>(<span class="variable">aiResponse</span>)
+            <span class="keyword">IF</span> <span class="variable">alert</span> != <span class="variable">lastAlertState</span>:
+                <span class="function">sendToDashboard</span>(<span class="variable">alert</span>)
+                <span class="variable">lastAlertState</span> = <span class="variable">alert</span>
+        <span class="keyword">ELSE</span>:
+            <span class="function">sendToDashboard</span>({<span class="string">"type"</span>: <span class="string">"SYNCED"</span>})
+            <span class="variable">lastAlertState</span> = <span class="keyword">NULL</span>
+        
+        <span class="comment">// Wait before next poll</span>
+        <span class="keyword">WAIT</span> <span class="variable">pollingInterval</span>
+    
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+                
+                <!-- Fetch Spotify Data -->
+                <div class="code-block">
+                    <h3>Fetch Spotify Data</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">fetchSpotifyNowPlaying</span>(<span class="variable">client</span>):
+    
+    <span class="keyword">TRY</span>:
+        <span class="variable">response</span> = <span class="variable">client</span>.<span class="function">getCurrentTrack</span>()
+        
+        <span class="keyword">IF</span> <span class="variable">response</span> is <span class="keyword">NULL</span> <span class="keyword">OR NOT</span> <span class="variable">response</span>.is_playing:
+            <span class="keyword">RETURN</span> <span class="keyword">NULL</span>
+        
+        <span class="comment">// Get audio features for analysis</span>
+        <span class="variable">audioFeatures</span> = <span class="variable">client</span>.<span class="function">getAudioFeatures</span>(<span class="variable">response</span>.track_id)
+        
+        <span class="keyword">RETURN</span> {
+            <span class="string">"track_name"</span>: <span class="variable">response</span>.name,
+            <span class="string">"artist"</span>: <span class="variable">response</span>.artists[0].name,
+            <span class="string">"valence"</span>: <span class="variable">audioFeatures</span>.valence,
+            <span class="string">"energy"</span>: <span class="variable">audioFeatures</span>.energy,
+            <span class="string">"tempo"</span>: <span class="variable">audioFeatures</span>.tempo
+        }
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(<span class="string">"Spotify API error"</span>, error)
+        <span class="keyword">RETURN</span> <span class="keyword">NULL</span>
+
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+                
+                <!-- Fetch Calendar Events -->
+                <div class="code-block">
+                    <h3>Fetch Calendar Events</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">fetchCalendarEvents</span>(<span class="variable">client</span>):
+    
+    <span class="keyword">SET</span> <span class="variable">timeMin</span> = currentTime
+    <span class="keyword">SET</span> <span class="variable">timeMax</span> = currentTime + 2 hours
+    
+    <span class="keyword">TRY</span>:
+        <span class="variable">events</span> = <span class="variable">client</span>.<span class="function">getEvents</span>(
+            <span class="string">timeMin</span> = <span class="variable">timeMin</span>,
+            <span class="string">timeMax</span> = <span class="variable">timeMax</span>,
+            <span class="string">orderBy</span> = <span class="string">"startTime"</span>
+        )
+        
+        <span class="keyword">RETURN</span> <span class="variable">events</span>.<span class="function">filter</span>(e => e.status != <span class="string">"cancelled"</span>)
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(<span class="string">"Calendar API error"</span>, error)
+        <span class="keyword">RETURN</span> []
+
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+                
+                <!-- AI Analysis -->
+                <div class="code-block">
+                    <h3>Duke AI Gateway Analysis</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">analyzeVibeCompatibility</span>(<span class="variable">musicContext</span>, <span class="variable">calendarContext</span>):
+    
+    <span class="comment">// Build prompt for LLM</span>
+    <span class="variable">prompt</span> = <span class="string">"""
+    ROLE: Context-switching assistant
+    
+    CURRENT MUSIC:
+    - Track: {musicContext.track_name}
+    - Valence: {musicContext.valence}
+    - Energy: {musicContext.energy}
+    - Tempo: {musicContext.tempo} BPM
+    
+    UPCOMING EVENTS:
+    {formatCalendarForLLM(calendarContext)}
+    
+    TASK:
+    1. Assess music MOOD (energizing/calming/neutral)
+    2. Assess task INTENT (focus/collaborative/creative)
+    3. Rate compatibility (0-100)
+    4. Suggest transition if score < 60
+    
+    RESPOND JSON:
+    {
+        "music_mood": string,
+        "task_intent": string,
+        "compatibility_score": number,
+        "transition_suggestion": string or null
+    }
+    """</span>
+    
+    <span class="comment">// Send to Duke AI Gateway</span>
+    <span class="keyword">TRY</span>:
+        <span class="variable">response</span> = <span class="function">POST</span>(<span class="string">"https://duke-ai-gateway/api/chat"</span>, {
+            <span class="string">"model"</span>: <span class="string">"gpt-4"</span>,
+            <span class="string">"messages"</span>: [{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="variable">prompt</span>}]
+        })
+        
+        <span class="keyword">RETURN</span> <span class="function">parseJSON</span>(<span class="variable">response</span>.content)
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(error)
+        <span class="comment">// Fail safe: assume synced</span>
+        <span class="keyword">RETURN</span> {<span class="string">"compatibility_score"</span>: 100}
+
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+                
+                <!-- Create Alert -->
+                <div class="code-block">
+                    <h3>Alert Generation</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">createAlert</span>(<span class="variable">aiResponse</span>):
+    
+    <span class="comment">// Calculate severity based on score</span>
+    <span class="keyword">IF</span> <span class="variable">aiResponse</span>.score < 30:
+        <span class="variable">severity</span> = <span class="string">"HIGH"</span>
+    <span class="keyword">ELSE IF</span> <span class="variable">aiResponse</span>.score < 50:
+        <span class="variable">severity</span> = <span class="string">"MEDIUM"</span>
+    <span class="keyword">ELSE</span>:
+        <span class="variable">severity</span> = <span class="string">"LOW"</span>
+    
+    <span class="keyword">RETURN</span> {
+        <span class="string">"type"</span>: <span class="string">"VIBE_MISMATCH"</span>,
+        <span class="string">"severity"</span>: <span class="variable">severity</span>,
+        <span class="string">"message"</span>: <span class="variable">aiResponse</span>.transition_suggestion,
+        <span class="string">"score"</span>: <span class="variable">aiResponse</span>.score
+    }
+
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+                
+                <!-- Dashboard Update -->
+                <div class="code-block">
+                    <h3>Dashboard Communication</h3>
+                    <pre>
+<span class="keyword">FUNCTION</span> <span class="function">sendToDashboard</span>(<span class="variable">data</span>):
+    
+    <span class="comment">// Push to frontend via WebSocket or REST</span>
+    <span class="keyword">TRY</span>:
+        <span class="keyword">IF</span> webSocketConnected:
+            <span class="variable">websocket</span>.<span class="function">send</span>(<span class="function">JSON.stringify</span>(<span class="variable">data</span>))
+        <span class="keyword">ELSE</span>:
+            <span class="comment">// Store for polling endpoint</span>
+            <span class="variable">dashboardState</span> = <span class="variable">data</span>
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(<span class="string">"Dashboard update failed"</span>, error)
+
+<span class="keyword">END FUNCTION</span>
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

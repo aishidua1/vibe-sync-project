@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe-Sync System Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        .architecture {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .layer {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .layer-label {
+            min-width: 140px;
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 1.1em;
+            text-align: right;
+            padding-right: 20px;
+        }
+        
+        .components {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .component {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            flex: 1;
+            min-width: 200px;
+            transition: transform 0.2s;
+        }
+        
+        .component:hover {
+            transform: translateY(-5px);
+        }
+        
+        .component-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .component-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .arrow {
+            text-align: center;
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .data-flow {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .data-flow h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .flow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .flow-step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .flow-step p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .features {
+            background: #edf2f7;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .features h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        .feature-item strong {
+            color: #764ba2;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .pseudocode {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 30px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+        
+        .pseudocode h2 {
+            color: #63b3ed;
+            margin-bottom: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .keyword {
+            color: #fc8181;
+            font-weight: bold;
+        }
+        
+        .function {
+            color: #68d391;
+        }
+        
+        .comment {
+            color: #90cdf4;
+            font-style: italic;
+        }
+        
+        .string {
+            color: #fbd38d;
+        }
+        
+        @media (max-width: 768px) {
+            .layer {
+                flex-direction: column;
+            }
+            .layer-label {
+                text-align: left;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Vibe-Sync Desk Companion<br>System Architecture</h1>
+        
+        <div class="features">
+            <h2>System Functionality</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <strong>Real-Time Monitoring</strong>
+                    Continuously tracks Spotify playback and upcoming calendar events
+                </div>
+                <div class="feature-item">
+                    <strong>Intelligent Analysis</strong>
+                    Uses LLM-powered interpretation to understand music mood and task intent
+                </div>
+                <div class="feature-item">
+                    <strong>Vibe Detection</strong>
+                    Identifies mismatches between sonic environment and cognitive needs
+                </div>
+                <div class="feature-item">
+                    <strong>Proactive Alerts</strong>
+                    Provides visual notifications with transition suggestions
+                </div>
+                <div class="feature-item">
+                    <strong>Context Switching Support</strong>
+                    Helps users smoothly transition between different task types
+                </div>
+                <div class="feature-item">
+                    <strong>Dashboard Display</strong>
+                    Real-time visualization of current state and recommendations
+                </div>
+            </div>
+        </div>
+        
+        <div class="architecture">
+            <div class="layer">
+                <div class="layer-label">INPUT LAYER</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">🎵 Spotify API</div>
+                        <div class="component-desc">Track metadata: valence, energy, tempo, genre, artist</div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">📅 Google Calendar API</div>
+                        <div class="component-desc">Event titles, descriptions, start/end times, location</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="layer">
+                <div class="layer-label">PROCESSING LAYER</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">🐍 Python Orchestrator</div>
+                        <div class="component-desc">API polling, data aggregation, request formatting, response handling</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="layer">
+                <div class="layer-label">INTELLIGENCE LAYER</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">🧠 Duke AI Gateway</div>
+                        <div class="component-desc">LLM-powered analysis: mood interpretation, task analysis, mismatch detection</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <div class="layer">
+                <div class="layer-label">OUTPUT LAYER</div>
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">📊 Web Dashboard</div>
+                        <div class="component-desc">Visual alerts, current state display, transition suggestions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-flow">
+            <h2>Data Flow</h2>
+            
+            <div class="flow-step">
+                <h3>1. Data Extraction</h3>
+                <p><strong>Input:</strong> Raw API calls to Spotify and Google Calendar<br>
+                <strong>Process:</strong> Python script authenticates and polls both APIs every 30 seconds<br>
+                <strong>Output:</strong> JSON objects containing music metadata and calendar event details<br>
+                <strong>Transformation:</strong> Raw JSON → Structured data objects with normalized fields</p>
+            </div>
+            
+            <div class="flow-step">
+                <h3>2. Data Aggregation</h3>
+                <p><strong>Input:</strong> Structured Spotify and Calendar data<br>
+                <strong>Process:</strong> Python combines current track info with next 2 hours of calendar events<br>
+                <strong>Output:</strong> Unified context object<br>
+                <strong>Storage:</strong> Temporary in-memory cache for comparison with previous state</p>
+            </div>
+            
+            <div class="flow-step">
+                <h3>3. LLM Interpretation</h3>
+                <p><strong>Input:</strong> Context object sent to Duke AI Gateway as formatted prompt<br>
+                <strong>Process:</strong> LLM analyzes music mood (energizing/calming/neutral) and task intent (focus/collaborative/creative)<br>
+                <strong>Output:</strong> Structured JSON response with vibe assessment and compatibility score<br>
+                <strong>Transfer:</strong> HTTPS request/response via Duke's secure endpoint</p>
+            </div>
+            
+            <div class="flow-step">
+                <h3>4. Mismatch Detection</h3>
+                <p><strong>Input:</strong> LLM's compatibility assessment<br>
+                <strong>Process:</strong> Python evaluates threshold (score < 60 = mismatch)<br>
+                <strong>Output:</strong> Alert flag + personalized transition suggestion<br>
+                <strong>Storage:</strong> Alert state persisted to prevent duplicate notifications</p>
+            </div>
+            
+            <div class="flow-step">
+                <h3>5. Dashboard Update</h3>
+                <p><strong>Input:</strong> Alert data and current state<br>
+                <strong>Process:</strong> WebSocket push to frontend or REST endpoint poll<br>
+                <strong>Output:</strong> Visual notification rendered on user's dashboard<br>
+                <strong>Display:</strong> Color-coded status, transition suggestions, and "Next Up" preview</p>
+            </div>
+        </div>
+        
+        <div class="pseudocode">
+            <h2>Pseudocode: Core Vibe-Sync Logic</h2>
+            <pre>
+<span class="comment">// Main orchestration loop</span>
+<span class="keyword">FUNCTION</span> <span class="function">vibeSync_MainLoop</span>():
+    
+    <span class="keyword">INITIALIZE</span> spotifyClient, calendarClient, aiGateway
+    <span class="keyword">SET</span> pollingInterval = 30 seconds
+    <span class="keyword">SET</span> lastAlertState = <span class="keyword">NULL</span>
+    
+    <span class="keyword">WHILE</span> system is running:
+        
+        <span class="comment">// Step 1: Fetch current data</span>
+        currentTrack = <span class="function">fetchSpotifyNowPlaying</span>(spotifyClient)
+        upcomingEvents = <span class="function">fetchCalendarEvents</span>(calendarClient, nextHours=2)
+        
+        <span class="keyword">IF</span> currentTrack is <span class="keyword">NULL</span>:
+            <span class="keyword">DISPLAY</span> <span class="string">"No music playing"</span>
+            <span class="keyword">WAIT</span> pollingInterval
+            <span class="keyword">CONTINUE</span>
+        
+        <span class="comment">// Step 2: Extract and structure data</span>
+        musicContext = {
+            <span class="string">"track_name"</span>: currentTrack.name,
+            <span class="string">"artist"</span>: currentTrack.artist,
+            <span class="string">"valence"</span>: currentTrack.audio_features.valence,  <span class="comment">// 0-1 (sad-happy)</span>
+            <span class="string">"energy"</span>: currentTrack.audio_features.energy,    <span class="comment">// 0-1 (calm-intense)</span>
+            <span class="string">"tempo"</span>: currentTrack.audio_features.tempo      <span class="comment">// BPM</span>
+        }
+        
+        calendarContext = []
+        <span class="keyword">FOR EACH</span> event <span class="keyword">IN</span> upcomingEvents:
+            <span class="keyword">APPEND</span> {
+                <span class="string">"title"</span>: event.summary,
+                <span class="string">"description"</span>: event.description,
+                <span class="string">"start_time"</span>: event.start,
+                <span class="string">"minutes_until"</span>: <span class="function">calculateTimeDelta</span>(event.start)
+            } <span class="keyword">TO</span> calendarContext
+        
+        <span class="comment">// Step 3: Send to LLM for interpretation</span>
+        aiResponse = <span class="function">analyzeMoodAndIntent</span>(musicContext, calendarContext)
+        
+        <span class="comment">// Step 4: Evaluate compatibility</span>
+        <span class="keyword">IF</span> aiResponse.compatibility_score < 60:
+            alert = {
+                <span class="string">"type"</span>: <span class="string">"VIBE_MISMATCH"</span>,
+                <span class="string">"severity"</span>: <span class="function">calculateSeverity</span>(aiResponse.compatibility_score),
+                <span class="string">"message"</span>: aiResponse.transition_suggestion,
+                <span class="string">"next_event"</span>: calendarContext[0]
+            }
+            
+            <span class="comment">// Prevent duplicate alerts</span>
+            <span class="keyword">IF</span> alert != lastAlertState:
+                <span class="function">sendToDashboard</span>(alert)
+                lastAlertState = alert
+        <span class="keyword">ELSE</span>:
+            <span class="function">sendToDashboard</span>({<span class="string">"type"</span>: <span class="string">"SYNCED"</span>})
+            lastAlertState = <span class="keyword">NULL</span>
+        
+        <span class="keyword">WAIT</span> pollingInterval
+    
+<span class="keyword">END FUNCTION</span>
+
+
+<span class="comment">// AI Gateway interaction component</span>
+<span class="keyword">FUNCTION</span> <span class="function">analyzeMoodAndIntent</span>(musicContext, calendarContext):
+    
+    <span class="comment">// Build structured prompt for LLM</span>
+    prompt = <span class="string">"""
+    ROLE: You are a context-switching assistant analyzing vibe compatibility.
+    
+    CURRENT MUSIC:
+    - Track: {musicContext.track_name} by {musicContext.artist}
+    - Valence (positivity): {musicContext.valence}
+    - Energy (intensity): {musicContext.energy}
+    - Tempo: {musicContext.tempo} BPM
+    
+    UPCOMING SCHEDULE:
+    {formatCalendarForLLM(calendarContext)}
+    
+    TASK:
+    1. Assess the MOOD of the music (energizing/calming/neutral)
+    2. Assess the INTENT of the next event (deep focus/collaborative/creative/break)
+    3. Rate compatibility on a scale of 0-100
+    4. If score < 60, suggest a transition action
+    
+    RESPOND IN JSON:
+    {
+        "music_mood": string,
+        "task_intent": string,
+        "compatibility_score": number,
+        "transition_suggestion": string or null
+    }
+    """</span>
+    
+    <span class="comment">// Send to Duke AI Gateway</span>
+    <span class="keyword">TRY</span>:
+        response = <span class="function">POST</span>(<span class="string">"https://duke-ai-gateway.edu/api/chat"</span>, {
+            <span class="string">"model"</span>: <span class="string">"gpt-4"</span>,
+            <span class="string">"messages"</span>: [{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: prompt}]
+        })
+        
+        <span class="keyword">RETURN</span> <span class="function">parseJSON</span>(response.content)
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(error)
+        <span class="keyword">RETURN</span> {
+            <span class="string">"compatibility_score"</span>: 100,  <span class="comment">// Fail safe: assume synced</span>
+            <span class="string">"transition_suggestion"</span>: <span class="keyword">NULL</span>
+        }
+
+<span class="keyword">END FUNCTION</span>
+
+
+<span class="comment">// Helper: Fetch current Spotify track</span>
+<span class="keyword">FUNCTION</span> <span class="function">fetchSpotifyNowPlaying</span>(client):
+    
+    <span class="keyword">TRY</span>:
+        response = client.<span class="function">getCurrentTrack</span>()
+        
+        <span class="keyword">IF</span> response is <span class="keyword">NULL</span> <span class="keyword">OR</span> response.is_playing == <span class="keyword">FALSE</span>:
+            <span class="keyword">RETURN</span> <span class="keyword">NULL</span>
+        
+        <span class="comment">// Fetch audio features for analysis</span>
+        audioFeatures = client.<span class="function">getAudioFeatures</span>(response.track_id)
+        
+        <span class="keyword">RETURN</span> {
+            <span class="string">"name"</span>: response.name,
+            <span class="string">"artist"</span>: response.artists[0].name,
+            <span class="string">"audio_features"</span>: audioFeatures
+        }
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(<span class="string">"Spotify API error"</span>, error)
+        <span class="keyword">RETURN</span> <span class="keyword">NULL</span>
+
+<span class="keyword">END FUNCTION</span>
+
+
+<span class="comment">// Helper: Fetch upcoming calendar events</span>
+<span class="keyword">FUNCTION</span> <span class="function">fetchCalendarEvents</span>(client, nextHours):
+    
+    <span class="keyword">SET</span> timeMin = currentTime
+    <span class="keyword">SET</span> timeMax = currentTime + nextHours
+    
+    <span class="keyword">TRY</span>:
+        events = client.<span class="function">getEvents</span>(
+            <span class="string">timeMin</span> = timeMin,
+            <span class="string">timeMax</span> = timeMax,
+            <span class="string">orderBy</span> = <span class="string">"startTime"</span>
+        )
+        
+        <span class="keyword">RETURN</span> events.<span class="function">filter</span>(event => event.status != <span class="string">"cancelled"</span>)
+        
+    <span class="keyword">CATCH</span> error:
+        <span class="function">logError</span>(<span class="string">"Calendar API error"</span>, error)
+        <span class="keyword">RETURN</span> []
+
+<span class="keyword">END FUNCTION</span>
+
+
+<span class="comment">// Helper: Calculate severity based on compatibility score</span>
+<span class="keyword">FUNCTION</span> <span class="function">calculateSeverity</span>(score):
+    
+    <span class="keyword">IF</span> score < 30:
+        <span class="keyword">RETURN</span> <span class="string">"HIGH"</span>      <span class="comment">// Major mismatch</span>
+    <span class="keyword">ELSE IF</span> score < 50:
+        <span class="keyword">RETURN</span> <span class="string">"MEDIUM"</span>    <span class="comment">// Noticeable mismatch</span>
+    <span class="keyword">ELSE</span>:
+        <span class="keyword">RETURN</span> <span class="string">"LOW"</span>       <span class="comment">// Minor mismatch</span>
+
+<span class="keyword">END FUNCTION</span>
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

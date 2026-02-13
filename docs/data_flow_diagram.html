@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe-Sync Data Flow Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .diagram-container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 50px;
+            font-size: 2.2em;
+        }
+        
+        .flow-section {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .flow-content {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            padding-left: 60px;
+        }
+        
+        .flow-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .flow-box-title {
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        
+        .flow-box-content {
+            color: #4a5568;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .flow-arrow {
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .transformation-box {
+            background: #fef5e7;
+            border: 2px solid #f39c12;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            margin-left: 60px;
+        }
+        
+        .transformation-label {
+            color: #d68910;
+            font-weight: 700;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .transformation-text {
+            color: #6c5319;
+            font-size: 0.9em;
+        }
+        
+        .storage-box {
+            background: #ebf5fb;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            margin-left: 60px;
+        }
+        
+        .storage-label {
+            color: #2874a6;
+            font-weight: 700;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .storage-text {
+            color: #1b4f72;
+            font-size: 0.9em;
+        }
+        
+        .transfer-box {
+            background: #f4ecf7;
+            border: 2px solid #8e44ad;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            margin-left: 60px;
+        }
+        
+        .transfer-label {
+            color: #6c3483;
+            font-weight: 700;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .transfer-text {
+            color: #512e5f;
+            font-size: 0.9em;
+        }
+        
+        .vertical-connector {
+            width: 3px;
+            height: 40px;
+            background: #cbd5e0;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .flow-content {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <h1>Vibe-Sync Data Flow Diagram</h1>
+        
+        <!-- Step 1 -->
+        <div class="flow-section">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Data Extraction</div>
+            </div>
+            <div class="flow-content">
+                <div class="flow-box">
+                    <div class="flow-box-title">INPUT: API Calls</div>
+                    <div class="flow-box-content">
+                        • Spotify Web API<br>
+                        • Google Calendar API<br>
+                        • Authentication tokens
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">PROCESS: Python Polling</div>
+                    <div class="flow-box-content">
+                        • Authenticate with OAuth<br>
+                        • Poll every 30 seconds<br>
+                        • Error handling & retries
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">OUTPUT: Raw JSON</div>
+                    <div class="flow-box-content">
+                        • Track metadata<br>
+                        • Audio features<br>
+                        • Calendar events
+                    </div>
+                </div>
+            </div>
+            <div class="transformation-box">
+                <div class="transformation-label">🔄 Transformation</div>
+                <div class="transformation-text">Raw API responses → Structured JSON objects with normalized field names</div>
+            </div>
+        </div>
+        
+        <div class="vertical-connector"></div>
+        
+        <!-- Step 2 -->
+        <div class="flow-section">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Data Aggregation</div>
+            </div>
+            <div class="flow-content">
+                <div class="flow-box">
+                    <div class="flow-box-title">INPUT: Structured Data</div>
+                    <div class="flow-box-content">
+                        • Current track info<br>
+                        • Audio features (valence, energy, tempo)<br>
+                        • Next 2 hours of events
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">PROCESS: Context Building</div>
+                    <div class="flow-box-content">
+                        • Combine music + calendar<br>
+                        • Calculate time deltas<br>
+                        • Filter relevant events
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">OUTPUT: Context Object</div>
+                    <div class="flow-box-content">
+                        • Unified data structure<br>
+                        • Music metadata<br>
+                        • Upcoming schedule
+                    </div>
+                </div>
+            </div>
+            <div class="storage-box">
+                <div class="storage-label">💾 Storage</div>
+                <div class="storage-text">Temporary in-memory cache for state comparison (detect changes from previous poll)</div>
+            </div>
+        </div>
+        
+        <div class="vertical-connector"></div>
+        
+        <!-- Step 3 -->
+        <div class="flow-section">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">LLM Interpretation</div>
+            </div>
+            <div class="flow-content">
+                <div class="flow-box">
+                    <div class="flow-box-title">INPUT: Formatted Prompt</div>
+                    <div class="flow-box-content">
+                        • Music context (track, mood metrics)<br>
+                        • Calendar context (events, timing)<br>
+                        • Analysis instructions
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">PROCESS: AI Analysis</div>
+                    <div class="flow-box-content">
+                        • Duke AI Gateway (GPT-4)<br>
+                        • Mood interpretation<br>
+                        • Task intent classification
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">OUTPUT: Assessment JSON</div>
+                    <div class="flow-box-content">
+                        • Music mood label<br>
+                        • Task intent label<br>
+                        • Compatibility score (0-100)
+                    </div>
+                </div>
+            </div>
+            <div class="transfer-box">
+                <div class="transfer-label">🔗 Transfer</div>
+                <div class="transfer-text">HTTPS POST request to Duke AI Gateway → Secure API response with structured JSON</div>
+            </div>
+        </div>
+        
+        <div class="vertical-connector"></div>
+        
+        <!-- Step 4 -->
+        <div class="flow-section">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <div class="step-title">Mismatch Detection</div>
+            </div>
+            <div class="flow-content">
+                <div class="flow-box">
+                    <div class="flow-box-title">INPUT: Compatibility Score</div>
+                    <div class="flow-box-content">
+                        • Score from LLM (0-100)<br>
+                        • Transition suggestion<br>
+                        • Previous alert state
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">PROCESS: Threshold Check</div>
+                    <div class="flow-box-content">
+                        • Evaluate score < 60<br>
+                        • Calculate severity level<br>
+                        • Compare with last alert
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">OUTPUT: Alert Decision</div>
+                    <div class="flow-box-content">
+                        • Alert flag (yes/no)<br>
+                        • Severity (high/medium/low)<br>
+                        • Personalized message
+                    </div>
+                </div>
+            </div>
+            <div class="storage-box">
+                <div class="storage-label">💾 Storage</div>
+                <div class="storage-text">Alert state persisted to prevent duplicate notifications for the same mismatch</div>
+            </div>
+        </div>
+        
+        <div class="vertical-connector"></div>
+        
+        <!-- Step 5 -->
+        <div class="flow-section">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <div class="step-title">Dashboard Update</div>
+            </div>
+            <div class="flow-content">
+                <div class="flow-box">
+                    <div class="flow-box-title">INPUT: Alert Data</div>
+                    <div class="flow-box-content">
+                        • Alert type & severity<br>
+                        • Transition suggestion<br>
+                        • Current state snapshot
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">PROCESS: Frontend Push</div>
+                    <div class="flow-box-content">
+                        • WebSocket push OR<br>
+                        • REST endpoint poll<br>
+                        • Format for display
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">
+                    <div class="flow-box-title">OUTPUT: Visual Alert</div>
+                    <div class="flow-box-content">
+                        • Color-coded notification<br>
+                        • Transition suggestion<br>
+                        • "Next Up" preview
+                    </div>
+                </div>
+            </div>
+            <div class="transfer-box">
+                <div class="transfer-label">🔗 Transfer</div>
+                <div class="transfer-text">Real-time data pushed to web dashboard via WebSocket or HTTP polling</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
