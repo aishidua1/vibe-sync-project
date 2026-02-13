@@ -105,34 +105,3 @@ vibe-sync-project/
 └── README.md
 ```
 
-## 🚀 Future Implementation
-
-This repository currently contains the **system architecture and design documentation**. The actual implementation will include:
-
-- Python scripts for API integration
-- Web dashboard interface
-- Configuration files for API credentials
-- Testing suite
-
-## 👨‍🎓 Academic Context
-
-This project was developed as part of a Design + Tech Innovation course at Duke University. The architecture demonstrates the integration of:
-
-- RESTful API design
-- LLM-powered data interpretation
-- Real-time monitoring systems
-- User-centered design for cognitive support
-
-## 📝 License
-
-This project is part of academic coursework at Duke University.
-
-## 🙏 Acknowledgments
-
-- Duke OIT for providing access to the AI Gateway
-- Spotify and Google for their comprehensive APIs
-- Course instructors for guidance on system architecture design
-
----
-
-**Developer**: Ashish | **Institution**: Duke University | **Program**: Design + Tech Innovation
